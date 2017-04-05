@@ -10,6 +10,14 @@
 
 using namespace std;
 
+ostream& operator<<(ostream& out, const any& in)
+{
+	if (in.type() == typeid(int)) out << any_cast<int>(in);
+	else if (in.type() == typeid(string)) out << any_cast<string>(in);
+
+	return out;
+}
+
 int  main()
 {
 	scanner lex{ \
@@ -44,11 +52,8 @@ int  main()
 			for (const auto& elem : output)
 			{
 				const string tag_name = elem.get_tag().cref_name();
-				if(tag_name == "number")
-					cout << "<token tag='" << tag_name << "'>" << elem.get_value<int>() << "</token>" <<endl;
-				else if(tag_name == "letter")
-					cout << "<token tag='" << tag_name << "'>" << elem.get_value<string>() << "</token>" << endl;
-				else cout << "<token tag='" << tag_name << "' />" << endl;
+				if(tag_name != "space") cout << "<token tag = '" << tag_name << "'> " << elem.cref_value() << " </token>" <<endl;
+				else cout << "<token tag = '" << tag_name << "' />" << endl;
 			}
 		}
 	}
