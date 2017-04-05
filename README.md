@@ -1,3 +1,3 @@
 # Simple-Parser
 
-Just Toy.
+Just a toy.
