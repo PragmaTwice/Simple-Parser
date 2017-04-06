@@ -3,4 +3,4 @@
 Just a toy.
 
 ## 2017.4.6
-Just finish __scanner__
+Just finished __scanner__
