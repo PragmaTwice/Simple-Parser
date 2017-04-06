@@ -29,8 +29,10 @@ int  main()
 			scan_ignore{ isspace }), \
 		new_tag("count-dot", \
 			scan_process<int>{ [](char c) { return c == '.'; }, [](int& v) { ++v; }, 0 }), \
+		new_tag("smile-symbol", \
+			scan_lambda(s, i, x) { x = any(nullptr); if (i + 3 < s.cend() && string(i, i + 3) == "^-^") { i += 3; return true; } else return false; }), \
 		new_tag("exception-example", \
-			scan_lambda(s, i, ex) { auto b = i; if (i != s.cend() && *i == '~') { throw scan_error(i, "meet '~'."); ++i; } ex = any(0); return b != i; } ), \
+			scan_process<nullptr_t>{[](cscan_iterator& it) { return *it == '~'; }, [](nullptr_t&, cscan_iterator& it) { throw scan_error(it, "scanner meet '~'."); } }), \
 	};
 
 	scanner::input_type input;
@@ -38,7 +40,7 @@ int  main()
 
 #if  defined _DEBUG_1
 
-	cout << (input = "berfub 1234 ... ...... .q 233 1 6....653254 rrr212 t") << endl;
+	cout << (input = "berfub 1234 ... ...... .q 233 ^-^ 1 6....653254 rrr212 t") << endl;
 
 #elif defined _DEBUG_2
 
@@ -54,7 +56,7 @@ int  main()
 			for (const auto& elem : output)
 			{
 				const string tag_name = elem.get_tag().cref_name();
-				if(tag_name != "space") cout << "<token tag = '" << tag_name << "'> " << elem.cref_value() << " </token>" <<endl;
+				if(elem.cref_value().type() != typeid(nullptr_t)) cout << "<token tag = '" << tag_name << "'> " << elem.cref_value() << " </token>" <<endl;
 				else cout << "<token tag = '" << tag_name << "' />" << endl;
 			}
 		}

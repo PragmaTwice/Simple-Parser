@@ -114,7 +114,7 @@ public :
 
 		while (_input_iterator != _input_string.cend() && be_ignored(*_input_iterator)) ++_input_iterator;
 
-		_output_value = any(0);
+		_output_value = any(nullptr);
 		return begin_iterator != _input_iterator;
 	}
 };
@@ -124,34 +124,62 @@ class scan_process
 {
 private:
 
-	const function<bool(string::value_type, const T&)> be_processed;
-	const function<void(T&, string::value_type)> process;
+	const function<bool(const string::const_iterator&, const T&)> be_processed;
+	const function<void(T&, const string::const_iterator&)> process;
 	const T init_value;
 
 public:
 
 	scan_process(const function<bool(string::value_type)>& _be_processed, const function<void(T&)>& _process, const T& _init_value = T{}) :
-		be_processed([_be_processed](string::value_type __value, const T&) { return _be_processed(__value); }),
-		process( [_process] (T& __T, string::value_type) { return _process(__T); }),
+		be_processed([_be_processed](const string::const_iterator& __value, const T&) { return _be_processed(*__value); }),
+		process( [_process] (T& __T, const string::const_iterator&) { return _process(__T); }),
 		init_value(_init_value)
 	{
 	}
 
 	scan_process(const function<bool(string::value_type)>& _be_processed, const function<void(T&, string::value_type)>& _process, const T& _init_value = T{}) :
-		be_processed( [_be_processed] (string::value_type __value, const T&) { return _be_processed(__value); } ), 
-		process(_process), 
+		be_processed( [_be_processed] (const string::const_iterator& __value, const T&) { return _be_processed(*__value); } ),
+		process( [_process] (T& __T, const string::const_iterator& __value) { return _process(__T, *__value); }),
 		init_value(_init_value)
 	{
 	}
 
 	scan_process(const function<bool(string::value_type,const T&)>& _be_processed, const function<void(T&)>& _process, const T& _init_value = T{}) :
-		be_processed(_be_processed),
-		process( [_process] (T& __T, string::value_type) { return _process(__T); } ), 
+		be_processed( [_be_processed] (const string::const_iterator& __value, const T& __T) { return _be_processed(*__value, __T); }),
+		process( [_process] (T& __T, const string::const_iterator&) { return _process(__T); } ),
 		init_value(_init_value)
 	{
 	}
 
-	scan_process(const function<bool(string::value_type,const T&)>& _be_processed, const function<void(T&, string::value_type)>& _process, const T& _init_value = T{}) :
+	scan_process(const function<bool(string::value_type, const T&)>& _be_processed, const function<void(T&, string::value_type)>& _process, const T& _init_value = T{}) :
+		be_processed([_be_processed](const string::const_iterator& __value, const T& __T) { return _be_processed(*__value, __T); }),
+		process([_process](T& __T, const string::const_iterator& __value) { return _process(__T, *__value); }),
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(const string::const_iterator&)>& _be_processed, const function<void(T&)>& _process, const T& _init_value = T{}) :
+		be_processed([_be_processed](const string::const_iterator& __value, const T& __T) { return _be_processed(__value); }),
+		process([_process](T& __T, const string::const_iterator& __value) { return _process(__T); }),
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(const string::const_iterator&)>& _be_processed, const function<void(T&, const string::const_iterator&)>& _process, const T& _init_value = T{}) :
+		be_processed([_be_processed](const string::const_iterator& __value, const T& __T) { return _be_processed(__value); }),
+		process(_process), 
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(const string::const_iterator&, const T&)>& _be_processed, const function<void(T&)>& _process, const T& _init_value = T{}) :
+		be_processed(_be_processed), 
+		process([_process](T& __T, const string::const_iterator& __value) { return _process(__T); }),
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(const string::const_iterator&,const T&)>& _be_processed, const function<void(T&, const string::const_iterator&)>& _process, const T& _init_value = T{}) :
 		be_processed(_be_processed), process(_process), init_value(_init_value)
 	{
 	}
@@ -161,9 +189,9 @@ public:
 		auto begin_iterator = _input_iterator;
 		T value { init_value };
 
-		while (_input_iterator != _input_string.cend() && be_processed(*_input_iterator, value))
+		while (_input_iterator != _input_string.cend() && be_processed(_input_iterator, value))
 		{
-			process(value,*_input_iterator);
+			process(value,_input_iterator);
 			_input_iterator += 1;
 		}
 
@@ -171,6 +199,9 @@ public:
 		return begin_iterator != _input_iterator;
 	}
 };
+
+using scan_iterator = string::const_iterator;
+using cscan_iterator = const string::const_iterator;
 
 //Copyright 2017 Liu Mingyang.
 //This source file is part of SimpleParser.
