@@ -27,6 +27,8 @@ int  main()
 			scan_process<string>{ isalpha, [](string& v, char c) { v.push_back(c); } }), \
 		new_tag("space", \
 			scan_ignore{ isspace }), \
+		new_tag("count-dot", \
+			scan_process<int>{ [](char c) { return c == '.'; }, [](int& v) { ++v; }, 0 }), \
 		new_tag("exception-example", \
 			scan_lambda(s, i, ex) { auto b = i; if (i != s.cend() && *i == '~') { throw scan_error(i, "meet '~'."); ++i; } ex = any(0); return b != i; } ), \
 	};
@@ -36,7 +38,7 @@ int  main()
 
 #if  defined _DEBUG_1
 
-	cout << (input = "berfub 1234 q 233 1 6653254 rrr212 t") << endl;
+	cout << (input = "berfub 1234 ... ...... .q 233 1 6....653254 rrr212 t") << endl;
 
 #elif defined _DEBUG_2
 

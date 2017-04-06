@@ -124,13 +124,34 @@ class scan_process
 {
 private:
 
-	const function<bool(string::value_type)> be_processed;
+	const function<bool(string::value_type, const T&)> be_processed;
 	const function<void(T&, string::value_type)> process;
 	const T init_value;
 
 public:
 
-	scan_process(const function<bool(char)>& _be_processed, const function<void(T&, string::value_type)>& _process, const T& _init_value = T{}) :
+	scan_process(const function<bool(string::value_type)>& _be_processed, const function<void(T&)>& _process, const T& _init_value = T{}) :
+		be_processed([_be_processed](string::value_type __value, const T&) { return _be_processed(__value); }),
+		process( [_process] (T& __T, string::value_type) { return _process(__T); }),
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(string::value_type)>& _be_processed, const function<void(T&, string::value_type)>& _process, const T& _init_value = T{}) :
+		be_processed( [_be_processed] (string::value_type __value, const T&) { return _be_processed(__value); } ), 
+		process(_process), 
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(string::value_type,const T&)>& _be_processed, const function<void(T&)>& _process, const T& _init_value = T{}) :
+		be_processed(_be_processed),
+		process( [_process] (T& __T, string::value_type) { return _process(__T); } ), 
+		init_value(_init_value)
+	{
+	}
+
+	scan_process(const function<bool(string::value_type,const T&)>& _be_processed, const function<void(T&, string::value_type)>& _process, const T& _init_value = T{}) :
 		be_processed(_be_processed), process(_process), init_value(_init_value)
 	{
 	}
@@ -140,7 +161,7 @@ public:
 		auto begin_iterator = _input_iterator;
 		T value { init_value };
 
-		while (_input_iterator != _input_string.cend() && be_processed(*_input_iterator))
+		while (_input_iterator != _input_string.cend() && be_processed(*_input_iterator, value))
 		{
 			process(value,*_input_iterator);
 			_input_iterator += 1;
