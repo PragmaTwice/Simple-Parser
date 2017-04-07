@@ -27,12 +27,18 @@
     <ClInclude Include="scanerror.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="terminator.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_scanner.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="temp_test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

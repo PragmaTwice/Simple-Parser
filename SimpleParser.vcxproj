@@ -118,12 +118,14 @@
     <ClInclude Include="any.hpp" />
     <ClInclude Include="scanerror.hpp" />
     <ClInclude Include="scanner.hpp" />
+    <ClInclude Include="terminator.hpp" />
     <ClInclude Include="token.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="temp_test.cpp" />
     <ClCompile Include="test_scanner.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
