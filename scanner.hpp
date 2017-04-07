@@ -200,6 +200,47 @@ public:
 	}
 };
 
+template<typename T>
+class scan_match
+{
+private :
+
+	const T init_value;
+	const function<size_t(const string::const_iterator&,T&,const string::difference_type&)> match;
+
+public :
+
+	scan_match(const function<size_t(const string::const_iterator&, T&, const size_t&)>& _match, const T& _init_value = T{}) :
+		match(_match), init_value(_init_value)
+	{
+	}
+
+	scan_match(size_t scan_length, const function<bool(const string&, T&)>& _match, const T& _init_value = T{}) :
+		match([scan_length, _match](const string::const_iterator& _it, T& _value, const size_t& _rest) { \
+			if (scan_length <= _rest && _match(string(_it, _it + scan_length), _value)) return scan_length; else return (size_t)0; }),
+		init_value(_init_value)
+	{
+	}
+
+	scan_match(const string& to_match, const T& _init_value = T{}) :
+		scan_match(to_match.size(), [to_match](const string& _be_matched, T&) { return to_match == _be_matched; }, _init_value)
+	{
+	}
+
+	bool operator()(const string& _input_string, string::const_iterator& _input_iterator, any& _output_value)
+	{
+		T value { init_value };
+
+		size_t  diff = match(_input_iterator, value, _input_string.cend() - _input_iterator);
+
+		_input_iterator += diff;
+		_output_value = any(value);
+
+		return diff != 0;
+	}
+};
+
+
 using scan_iterator = string::const_iterator;
 using cscan_iterator = const string::const_iterator;
 

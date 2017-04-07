@@ -30,7 +30,7 @@ int  main()
 		new_tag("count-dot", \
 			scan_process<int>{ [](char c) { return c == '.'; }, [](int& v) { ++v; }, 0 }), \
 		new_tag("smile-symbol", \
-			scan_lambda(s, i, x) { x = any(nullptr); if (i + 3 < s.cend() && string(i, i + 3) == "^-^") { i += 3; return true; } else return false; }), \
+			scan_match<nullptr_t>{ "^-^", nullptr }), \
 		new_tag("exception-example", \
 			scan_process<nullptr_t>{[](cscan_iterator& it) { return *it == '~'; }, [](nullptr_t&, cscan_iterator& it) { throw scan_error(it, "scanner meet '~'."); } }), \
 	};
@@ -67,6 +67,7 @@ int  main()
 	}
 
 	cin.get();
+	return 0;
 }
 
 
