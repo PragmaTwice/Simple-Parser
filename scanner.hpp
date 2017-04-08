@@ -95,12 +95,13 @@ public /*function*/ :
 			vector<shared_ptr<token_tag>>::const_iterator tag_iterator;
 			for (tag_iterator = tags.cbegin(); tag_iterator != tags.cend(); ++tag_iterator)
 			{
+				positions.emplace_back(input_iterator);
 				if ((*tag_iterator)->cref_scan()(input, input_iterator, temp_value))
 				{
 					output.emplace_back(*tag_iterator, temp_value);
-					positions.emplace_back(input_iterator);
 					break;
 				}
+				else positions.pop_back();
 			}
 			if (tag_iterator == tags.cend())
 			{
