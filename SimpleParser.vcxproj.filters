@@ -30,6 +30,9 @@
     <ClInclude Include="terminator.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="trie.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt" />

@@ -26,7 +26,7 @@ public /*class*/ :
 
 	private /*member*/:
 
-		name_type name;
+		const name_type name;
 		scan_type scan;
 
 	public /*con/de-structor*/:
@@ -48,21 +48,6 @@ public /*class*/ :
 
 	public /*operator*/:
 
-		tag_type& operator=(const tag_type& another)
-		{
-			name = another.name;
-			scan = another.scan;
-
-			return *this;
-		}
-
-		tag_type& operator=(tag_type&& another)
-		{
-			name = move(another.name);
-			scan = move(another.scan);
-
-			return *this;
-		}
 
 		bool operator==(const tag_type& another)
 		{
@@ -96,18 +81,6 @@ public /*class*/ :
 
 	public /*function*/ :
 
-		inline void swap(tag_type& another)
-		{
-			name.swap(another.name);
-			scan.swap(another.scan);
-		}
-
-		inline void reset(const name_type& _name, const scan_type& _scan)
-		{
-			name = _name;
-			scan = _scan;
-		}
-
 		inline void reset(const scan_type& _scan)
 		{
 			scan = _scan;
@@ -126,7 +99,7 @@ public /*class*/ :
 
 private /*member*/ :
 
-	shared_ptr<tag_type> tag;
+	const shared_ptr<tag_type> tag;
 	any value;
 
 public /*con/de-structor*/:
@@ -148,32 +121,10 @@ public /*con/de-structor*/:
 
 public /*operator*/ :
 
-	token& operator=(const token& another)
-	{
-		tag = another.tag;
-		value = another.value;
-	}
-
-	token& operator=(token&& another)
-	{
-		tag = move(another.tag);
-		value = move(another.value);
-	}
+	
 
 public /*function*/ :
 
-	inline void swap(token& another)
-	{
-		std::swap(tag, another.tag);
-		value.swap(another.value);
-	}
-
-	template <typename T>
-	inline void reset(const shared_ptr<tag_type>& _tag, const T& _val)
-	{
-		tag = _tag;
-		value = _val;
-	}
 
 	template <typename T>
 	inline void reset(const T& _val)

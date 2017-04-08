@@ -120,6 +120,7 @@
     <ClInclude Include="scanner.hpp" />
     <ClInclude Include="terminator.hpp" />
     <ClInclude Include="token.hpp" />
+    <ClInclude Include="trie.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="gpl.txt" />
