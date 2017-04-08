@@ -37,6 +37,7 @@ int  main()
 
 	scanner::input_type input;
 	scanner::output_type output;
+	scanner::iterators_type outpos;
 
 #if  defined _DEBUG_1
 
@@ -50,14 +51,17 @@ int  main()
 
 	try 
 	{
-		if (lex.scan(input, output))
+		if (lex.scan(input, output, outpos))
 		{
 			cout << "success" << endl;
+
+			auto pos_iterator = outpos.cbegin();
 			for (const auto& elem : output)
 			{
 				const string tag_name = elem.get_tag().cref_name();
-				if(elem.cref_value().type() != typeid(nullptr_t)) cout << "<token tag = '" << tag_name << "'> " << elem.cref_value() << " </token>" <<endl;
-				else cout << "<token tag = '" << tag_name << "' />" << endl;
+				cout << "<token pos = '" << distance(input.cbegin(), *(pos_iterator++)) << "' ";
+				if(elem.cref_value().type() != typeid(nullptr_t)) cout <<"tag = '" << tag_name << "'> " << elem.cref_value() << " </token>" <<endl;
+				else cout << "tag = '" << tag_name << "' />" << endl;
 			}
 		}
 	}

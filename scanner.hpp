@@ -17,6 +17,7 @@ public /*type*/ :
 
 	using input_type = string;
 	using output_type = vector<token>;
+	using iterators_type = vector<input_type::const_iterator>;
 
 private /*member*/ :
 
@@ -77,6 +78,33 @@ public /*function*/ :
 			if (tag_iterator == tags.cend())
 			{
 				throw scan_error(input_iterator,"unknow characters");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool scan(const input_type& input, output_type& output, iterators_type& positions)
+	{
+		string::const_iterator input_iterator = input.cbegin();
+		any temp_value;
+
+		while (input_iterator != input.cend())
+		{
+			vector<shared_ptr<token_tag>>::const_iterator tag_iterator;
+			for (tag_iterator = tags.cbegin(); tag_iterator != tags.cend(); ++tag_iterator)
+			{
+				if ((*tag_iterator)->cref_scan()(input, input_iterator, temp_value))
+				{
+					output.emplace_back(*tag_iterator, temp_value);
+					positions.emplace_back(input_iterator);
+					break;
+				}
+			}
+			if (tag_iterator == tags.cend())
+			{
+				throw scan_error(input_iterator, "unknow characters");
 				return false;
 			}
 		}
